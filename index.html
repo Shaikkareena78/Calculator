@@ -1,0 +1,228 @@
+<html>
+<head>
+  <style>
+    body {
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #131862 0%, #43cea2 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+      overflow: hidden;
+    }
+    .container {
+      background: rgba(26,29,50, 0.55);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.45), 0 0 40px #43cea299;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 28px;
+      border: 1.8px solid rgba(255,255,255,0.2);
+      padding: 36px 28px 30px 28px;
+      min-width: 335px;
+      max-width: 98vw;
+    }
+    h1 {
+      text-align: center;
+      color: #FF6F61;
+      letter-spacing: 1.7px;
+      margin-bottom: 22px;
+      user-select: none;
+      font-weight: 700;
+      font-size: 2rem;
+      text-shadow: 0 2px 8px #0003;
+    }
+#value {
+  min-height: 60px;
+  max-width: 88vw;
+  font-size: 2.2rem;
+  padding: 0 17px;
+  border-radius: 10px;
+  color: #fff;
+  background: rgba(50,58,80,0.84);
+  letter-spacing: 1.4px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;   /* <-- This is the key addition */
+  overflow-x: auto;
+  border: 1px solid #43cea288;
+  box-shadow: 0 1px 8px #43cea26e, 0 0 0 0.5px #fff2;
+  font-family: 'Fira Mono', 'Consolas', monospace;
+  transition: box-shadow 0.26s;
+}
+
+    #value:focus {
+      outline: none;
+      box-shadow: 0 2px 16px #43cea2;
+    }
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+    }
+    .row {
+      display: flex;
+      gap: 13px;
+    }
+    button {
+      flex: 1;
+      height: 58px;
+      font-size: 1.19rem;
+      border: none;
+      border-radius: 13px;
+      background: rgba(51,60,91,0.65);
+      color: #EEE;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(31,38,135,0.11);
+      cursor: pointer;
+      transition: 
+        all 0.15s cubic-bezier(.24,.7,.4,1.1), 
+        box-shadow 0.23s cubic-bezier(.58,-0.01,.6,1.04);
+      outline: none;
+      position: relative;
+      overflow: hidden;
+    }
+    button:focus {
+      outline: none;
+      box-shadow: 0 0 0 2.5px #FFAC9194;
+      z-index: 2;
+    }
+    button:hover, button:active {
+      background: linear-gradient(98deg, #33e2b7cc 6%, #5489ffbb 95%);
+      color: #fff;
+      transform: translateY(-3px) scale(1.04);
+      box-shadow: 0 8px 31px #43cea291, 0 0 0.5px #fff8 inset;
+    }
+    #equal {
+      flex: 2;
+      background: linear-gradient(89deg,#ffb889 0%, #fb3640 100%);
+      color: #fff;
+      font-size: 1.31rem;
+      font-weight: 900;
+      letter-spacing: 1.1px;
+      box-shadow: 0 0px 24px #fb364055;
+    }
+    #equal:hover, #equal:active {
+      background: linear-gradient(86deg, #fc466b 0%, #3f5efb 100%);
+      box-shadow: 0 3px 25px #fc466b88, 0 0px 0.5px #fff8 inset;
+      color: #fff;
+    }
+    /* Unique neon border for the container */
+    .container::before {
+      content: "";
+      position: absolute;
+      filter: blur(19px);
+      z-index: -1;
+      top: 6%;
+      left: 8%;
+      width: 75vw;
+      min-width: 346px;
+      max-width: 430px;
+      height: 68vh;
+      background: linear-gradient(115deg, #43cea2 5%, #131862 90%);
+      opacity: .27;
+      border-radius: 40px;
+      transform: rotate(-8deg) scale(.97,1.06);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Calculator</h1>
+    <div id="value" tabindex="0">0</div>
+    <div class="buttons">
+      <div class="row">
+        <button onclick="clearAll()">C</button>
+        <button onclick="backspace()">Del</button>
+        <button onclick="append('%')">%</button>
+        <button onclick="append('/')">÷</button>
+      </div>
+      <div class="row">
+        <button onclick="append('7')">7</button>
+        <button onclick="append('8')">8</button>
+        <button onclick="append('9')">9</button>
+        <button onclick="append('*')">×</button>
+      </div>
+      <div class="row">
+        <button onclick="append('4')">4</button>
+        <button onclick="append('5')">5</button>
+        <button onclick="append('6')">6</button>
+        <button onclick="append('-')">−</button>
+      </div>
+      <div class="row">
+        <button onclick="append('1')">1</button>
+        <button onclick="append('2')">2</button>
+        <button onclick="append('3')">3</button>
+        <button onclick="append('+')">+</button>
+      </div>
+      <div class="row">
+        <button onclick="append('0')">0</button>
+        <button onclick="append('.')">.</button>
+        <button id="equal" onclick="calculate()">=</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const valueDisplay = document.getElementById("value");
+
+    function clearAll() {
+      valueDisplay.innerText = "0";
+    }
+
+    function backspace() {
+      let text = valueDisplay.innerText;
+      if (["Infinity", "Invalid", "NaN"].includes(text)) {
+        clearAll();
+        return;
+      }
+      if (text.length > 1) {
+        valueDisplay.innerText = text.slice(0, -1);
+      } else {
+        valueDisplay.innerText = "0";
+      }
+    }
+
+    function append(char) {
+      if (["Infinity", "Invalid", "NaN"].includes(valueDisplay.innerText)) return;
+      if (valueDisplay.innerText === "0") {
+        if (char === ".") {
+          valueDisplay.innerText = "0.";
+        } else if ("+-*/%".includes(char)) {
+          return; // Do not allow operator as first char
+        } else {
+          valueDisplay.innerText = char;
+        }
+      } else {
+        // Prevent two operators in a row
+        let v = valueDisplay.innerText;
+        if ("+-/%".includes(char) && "+-/%".includes(v.slice(-1))) return;
+        // Only single dot in a number
+        if (char === ".") {
+          let parts = v.split(/[\+\-\*\/%]/);
+          if (parts[parts.length-1].includes(".")) return;
+        }
+        valueDisplay.innerText += char;
+      }
+    }
+
+    function calculate() {
+      try {
+        // Replace symbols for eval
+        let exp = valueDisplay.innerText.replace(/÷/g, '/').replace(/×/g, '*').replace(/−/g,'-');
+        let res = eval(exp);
+        if (typeof res === "number" && !isNaN(res) && res !== Infinity && res !== -Infinity) {
+          valueDisplay.innerText = res;
+        } else if (res === Infinity || res === -Infinity) {
+          valueDisplay.innerText = "Infinity";
+        } else {
+          valueDisplay.innerText = "Invalid";
+        }
+      } catch (e) {
+        valueDisplay.innerText = "Invalid";
+      }
+    }
+  </script>
+</body>
+</html>
